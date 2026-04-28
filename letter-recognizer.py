@@ -14,7 +14,7 @@ def preprocess_image_to_canvas28(image_path: str) -> np.ndarray:
 
     coords = np.argwhere(bin_arr == 1)
     if coords.size == 0:
-        raise ValueError(f"No white pixels found in {image_path}")
+        raise ValueError(f"Nie znaleziono białych pikseli w pliku {image_path}")
 
     y0, x0 = coords.min(axis=0)
     y1, x1 = coords.max(axis=0) + 1
@@ -35,11 +35,7 @@ def preprocess_image_to_canvas28(image_path: str) -> np.ndarray:
     return canvas
 
 LETTER_LABEL_MAP = {
-    "a": "A", "b": "B", "c": "C", "d": "D", "e": "E", "f": "F",
-    "g": "G", "h": "H", "i": "I", "j": "J", "k": "K", "l": "L",
-    "m": "M", "n": "N", "o": "O", "p": "P", "q": "Q", "r": "R",
-    "s": "S", "t": "T", "u": "U", "v": "V", "w": "W", "x": "X",
-    "y": "Y", "z": "Z"
+    "a": "A", "b": "B", "c": "C", "d": "D", "e": "E", "f": "F"
 }
 
 def load_custom_data(base_dir: str, label_map: dict):
@@ -47,7 +43,7 @@ def load_custom_data(base_dir: str, label_map: dict):
     y_list = []
 
     if not os.path.isdir(base_dir):
-        print(f"(Informacja) Brak katalogu {base_dir} – pomijam wczytywanie.")
+        print(f"Brak katalogu {base_dir} - pomijam wczytywanie")
         return np.empty((0, 784), dtype=np.float32), np.empty((0,), dtype=object)
 
     for dirname, label in label_map.items():
@@ -67,7 +63,7 @@ def load_custom_data(base_dir: str, label_map: dict):
                 print(f"Pomijam {path}: {e}")
 
     if not X_list:
-        print(f"(Informacja) Nie znaleziono żadnych obrazów w {base_dir}")
+        print(f"Nie znaleziono żadnych obrazów w {base_dir}")
         return np.empty((0, 784), dtype=np.float32), np.empty((0,), dtype=object)
 
     X_custom = np.stack(X_list).astype(np.float32)
@@ -93,7 +89,7 @@ def show_examples_from_test(X: np.ndarray, y_true: np.ndarray, model: MLPClassif
 
         plt.subplot(3, 3, i)
         plt.imshow(img, cmap="gray")
-        plt.title(f"Prawda: {true_label}\nPred: {pred_label}")
+        plt.title(f"True: {true_label}\nPred: {pred_label}")
         plt.axis("off")
 
     plt.tight_layout()
@@ -114,11 +110,7 @@ def predict_custom_image(model: MLPClassifier, image_path: str):
 
 def main():
     X_train, y_train = load_custom_data("trainingset", LETTER_LABEL_MAP)
-    if X_train.shape[0] == 0:
-        print("No data available for training. Please ensure the 'trainingset/' directory exists and contains the appropriate subdirectories.")
-        return
 
-    # Definicja sieci
     mlp = MLPClassifier(
         hidden_layer_sizes=(128, 64),
         activation="relu",
